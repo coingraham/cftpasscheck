@@ -60,7 +60,7 @@
                 },
                 "Policies": [
                     {
-                        "PolicyName": "root",
+                        "PolicyName": "lambdalogtocloudwatch",
                         "PolicyDocument": {
                             "Version": "2012-10-17",
                             "Statement": [
@@ -97,7 +97,7 @@
                                 "    var confpassword = event.ResourceProperties.ConfirmPassword;",
                                 "    var responseData = {};",
                                 "    if (password == confpassword) {",
-                                "        responseData['Password'] = password;",
+                                "        responseData = {'passwordcheck': 'Password Valid!'};",
                                 "        response.send(event, context, response.SUCCESS, responseData);",
                                 "    } else {",
                                 "        responseData = {Error: 'Passwords do not match'};",
@@ -120,7 +120,7 @@
                 }
             }
         },
-        "LambdaCallout": {
+        "TestPasswords": {
             "Type": "Custom::LambdaCallout",
             "Properties": {
                 "ServiceToken": {
@@ -138,11 +138,11 @@
             }
         }
     },
-    "Outputs": {
-        "Password" : {
-            "Description" : "Remove this in production cloudformation templates obviously!",
-            "Value"       : {
-                "Fn::GetAtt": [ "LambdaCallout", "Password" ]
+    "Outputs":{
+        "Results":{
+            "Description":"Test Passwords Result",
+            "Value":{
+                    "Fn::GetAtt": [ "TestPasswords", "passwordcheck" ]
             }
         }
     }
